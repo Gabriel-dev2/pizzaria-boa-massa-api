@@ -49,7 +49,7 @@ jobs:
       # Upload para o S3
       - name: Upload to S3
         run: |
-          aws s3 cp deploy.zip . s3://boa-massa-artifacts/deploy-${{ env.VERSION_LABEL }}.zip
+          aws s3 cp deploy.zip s3://boa-massa-artifacts/deploy-${{ env.VERSION_LABEL }}.zip
 
       - name: Create new EB application version
         run: |
