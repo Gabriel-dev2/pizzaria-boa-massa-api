@@ -1,0 +1,84 @@
+name: Build & Deploy to Elastic Beanstalk
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_TAG: v${{ github.run_number }}
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # Build da imagem
+      - name: Log in no Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build e push da imagem
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      # Preparar arquivo Dockerrun com nova tag
+      - name: Criar bundle de deploy
+        run: |
+          mkdir bundle
+          sed "s|:latest|:${{ env.IMAGE_TAG }}|" Dockerrun.aws.json > bundle/Dockerrun.aws.json
+          cp -r .ebextensions bundle/.ebextensions || true
+          cd bundle
+          zip -r ../deploy.zip .
+
+      # Upload para o S3
+      - name: Enviar para o S3
+        uses: aws-actions/aws-cli-action@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          inline-script: |
+            aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/deploy-${{ env.IMAGE_TAG }}.zip
+
+      # Deploy no Elastic Beanstalk
+      - name: Deploy no Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.EB_APP_NAME }}
+          environment_name: ${{ secrets.EB_ENV_NAME }}
+          version_label: ${{ env.IMAGE_TAG }}
+          region: ${{ secrets.AWS_REGION }}
+          s3_bucket: ${{ secrets.S3_BUCKET }}
+          s3_key: deploy-${{ env.IMAGE_TAG }}.zip
+
+      - name: Wait for deployment to complete
+        run: |
+          echo "Esperando o deploy ser concluído..."
+          for i in {1..60}; do
+            STATUS=$(aws elasticbeanstalk describe-environments \
+              --environment-names ${{ secrets.EB_ENV_NAME }} \
+              --query "Environments[0].Status" \
+              --output text)
+
+            HEALTH=$(aws elasticbeanstalk describe-environments \
+              --environment-names ${{ secrets.EB_ENV_NAME }} \
+              --query "Environments[0].Health" \
+              --output text)
+
+            echo "Status: $STATUS | Health: $HEALTH"
+
+            if [[ "$STATUS" == "Ready" && "$HEALTH" == "Green" ]]; then
+              echo "Deploy concluído com sucesso!"
+              exit 0
+            fi
+
+            sleep 10
+          done
+
+          echo "Deploy não concluiu a tempo ou falhou."
+          exit 1
