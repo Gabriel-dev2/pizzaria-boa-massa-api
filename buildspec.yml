@@ -28,8 +28,7 @@ phases:
       - cp -r Dockerfile docker-compose.yml prisma src package*.json .env .ebextensions deploy/ 
   post_build:
     commands:
-      - echo "Gerando artefato deploy.zip"
-      - cd deploy && zip -r ../deploy.zip .
+      - echo "Gerado artefato"
 artifacts:
   files:
-    - deploy.zip
+    - deploy/
