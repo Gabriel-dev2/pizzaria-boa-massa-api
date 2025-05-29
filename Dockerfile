@@ -30,7 +30,7 @@ RUN service postgresql start && \
     su - postgres -c "psql -c \"CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;\""
 
 # Expõe a porta do app e do banco
-EXPOSE 3333 5432
+EXPOSE 8080 5432
 
 # Comando de inicialização
 CMD ["sh", "-c", "service postgresql start && npx prisma generate && npx prisma migrate deploy && npm run start"]
