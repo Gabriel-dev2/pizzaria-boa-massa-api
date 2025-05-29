@@ -13,7 +13,7 @@ phases:
       - npm run build
       - echo "Preparando diretório de deploy"
       - mkdir -p deploy
-      - cp -r Dockerfile package*.json dist prisma deploy/
+      - cp -r Dockerfile package*.json dist prisma tmp deploy/
   post_build:
     commands:
       - echo "Gerando artefato deploy.zip"
