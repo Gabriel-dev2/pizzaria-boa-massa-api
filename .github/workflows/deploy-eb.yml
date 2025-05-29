@@ -21,38 +21,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Publish
+        run: npm publish --access public --workspace ${{ github.workspace }}/out
+
       - name: Criar pacote zip
         run: |
-          zip -r $DEPLOY_ZIP . -x '*.git*' -x 'node_modules/*' -x 'tests/*' -x 'README*' -x 'LICENSE'
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          cd ${{ github.workspace }}/out
+          zip -r ${{ github.workspace }}/$DEPLOY_ZIP . -x '*.git*' -x 'node_modules/*' -x 'tests/*' -x 'README*' -x 'LICENSE'
 
       - name: Set version label
         id: vars
         run: echo "VERSION_LABEL=v1-${{ github.run_id }}-${{ github.run_number }}" >> $GITHUB_ENV
 
-      - name: Enviar artefato para S3
-        run: |
-          aws s3 cp $DEPLOY_ZIP s3://$S3_BUCKET_NAME/$DEPLOY_ZIP
-      
-      - name: Create new EB application version
-        run: |
-          aws elasticbeanstalk create-application-version \
-            --application-name $APPLICATION_NAME \
-            --version-label v${{ github.run_number }} \
-            --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=$DEPLOY_ZIP
-
       # Deploy no Elastic Beanstalk
-      - name: Atualizar ambiente Elastic Beanstalk
-        run: |
-          aws elasticbeanstalk update-environment \
-            --environment-name $ENVIRONMENT_NAME \
-            --version-label v${{ github.run_number }}
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ env.APPLICATION_NAME }}
+          environment_name: ${{ env.ENVIRONMENT_NAME }}
+          version_label: v${{ env.GITHUB_ENV }}
+          region: ${{ env.AWS_REGION }}
+          version_description: ${{ github.sha }}
+          deployment_package: ${{ github.workspace }}$DEPLOY_ZIP
 
       - name: Wait for deployment to complete
         run: |
