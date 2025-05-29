@@ -18,11 +18,11 @@ jobs:
           BRANCH="${GITHUB_REF#refs/heads/}"
           echo "Branch criada: $BRANCH"
 
-          # Verifica se foi criada a partir da master
-          PARENT=$(git log --pretty=%D -n 1 | grep -o 'origin/master' || echo 'none')
+          # Verifica se foi criada a partir da develop
+          PARENT=$(git log --pretty=%D -n 1 | grep -o 'origin/develop' || echo 'none')
           echo "Parent branch detectada: $PARENT"
 
-          if [[ "$PARENT" == "origin/master" ]]; then
+          if [[ "$PARENT" == "origin/develop" ]]; then
             echo "create_pr=true" >> $GITHUB_OUTPUT
           else
             echo "create_pr=false" >> $GITHUB_OUTPUT
