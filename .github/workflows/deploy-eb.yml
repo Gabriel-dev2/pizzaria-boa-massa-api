@@ -45,7 +45,7 @@ jobs:
           aws elasticbeanstalk create-application-version \
             --application-name $APPLICATION_NAME \
             --version-label v${{ github.run_number }} \
-            --source-bundle S3Bucket=S3_BUCKET_NAME,S3Key=$DEPLOY_ZIP
+            --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=$DEPLOY_ZIP
 
       # Deploy no Elastic Beanstalk
       - name: Atualizar ambiente Elastic Beanstalk
