@@ -3,21 +3,21 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      docker: 20
+      nodejs: 18
     commands:
-      - echo "Build iniciado"
+      - echo "Instalando dependências"
+      - npm ci
   build:
     commands:
-      - echo "Construindo imagem Docker"
-      - docker build -t boa-massa-app .
+      - echo "Compilando TypeScript"
+      - npm run build
+      - echo "Preparando diretório de deploy"
       - mkdir -p deploy
-      - cp Dockerfile deploy/
-      - cp -r .ebextensions deploy/ || true
-      - cp -r .elasticbeanstalk deploy/ || true
-      - cp -r * deploy/  # copia o projeto
-      - cd deploy
-      - zip -r ../deploy.zip .
-
+      - cp -r Dockerfile package*.json dist prisma deploy/
+  post_build:
+    commands:
+      - echo "Gerando artefato deploy.zip"
+      - cd deploy && zip -r ../deploy.zip .
 artifacts:
   files:
     - deploy.zip
