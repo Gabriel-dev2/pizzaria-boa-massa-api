@@ -1,4 +1,4 @@
-name: PR Auto para Develop
+name: Auto Pull Request
 
 on:
   push:
@@ -6,21 +6,16 @@ on:
       - develop
 
 jobs:
-  auto_pr_to_master:
-    if: startsWith(github.event.ref, 'refs/heads/') && github.event.sender.login != 'github-actions[bot]'
+  create-pull-request:
     runs-on: ubuntu-latest
-
     steps:
-
-      - name: Checkout
+      - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Cria Pull Request para master
+      - name: Criar Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          source: ${{ github.ref_name }}
-          target: master
-          title: 'PR: ${{ github.ref_name }} → master'
-          body: |
-            PR automático criado a partir da branch `${{ github.ref_name }}` para `master`.
-          branch: auto/${{ github.ref_name }}-to-master
+          base: master
+          branch: develop
+          title: "Atualização automática do develop para master"
+          body: "Este PR foi criado automaticamente pelo GitHub Actions."
