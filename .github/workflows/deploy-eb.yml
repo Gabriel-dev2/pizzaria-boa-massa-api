@@ -21,17 +21,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Instalar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Instalar dependências
-        run: npm install
-
-      - name: Compilar projeto
-        run: npm run build
-
       - name: Criar pacote zip
         run: |
           zip -r $DEPLOY_ZIP . -x '*.git*' -x 'node_modules/*' -x 'tests/*'
