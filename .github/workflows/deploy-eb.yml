@@ -26,8 +26,7 @@ jobs:
 
       - name: Criar pacote zip
         run: |
-          cd ${{ github.workspace }}/out
-          zip -r ${{ github.workspace }}/$DEPLOY_ZIP . -x '*.git*' -x 'node_modules/*' -x 'tests/*' -x 'README*' -x 'LICENSE'
+          zip -r $DEPLOY_ZIP . -x '*.git*' -x 'node_modules/*' -x 'tests/*' -x 'README*' -x 'LICENSE'
 
       - name: Set version label
         id: vars
@@ -45,7 +44,7 @@ jobs:
           version_label: v${{ env.GITHUB_ENV }}
           region: ${{ env.AWS_REGION }}
           version_description: ${{ github.sha }}
-          deployment_package: ${{ github.workspace }}$DEPLOY_ZIP
+          deployment_package: $DEPLOY_ZIP
 
       - name: Wait for deployment to complete
         run: |
