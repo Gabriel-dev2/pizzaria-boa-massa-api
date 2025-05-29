@@ -25,7 +25,7 @@ phases:
       - mkdir -p deploy
       - pwd
       - ls -la
-      - cp -r Dockerfile docker-compose.yml prisma src tmp package*.json .env .ebextensions deploy/ 
+      - cp -r Dockerfile docker-compose.yml prisma src package*.json .env .ebextensions deploy/ 
   post_build:
     commands:
       - echo "Gerando artefato deploy.zip"
