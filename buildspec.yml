@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 20
+    commands:
+      - echo "Build iniciado"
+  build:
+    commands:
+      - echo "Construindo imagem Docker"
+      - docker build -t boa-massa-app .
+      - mkdir -p deploy
+      - cp Dockerfile deploy/
+      - cp -r .ebextensions deploy/ || true
+      - cp -r .elasticbeanstalk deploy/ || true
+      - cp -r * deploy/  # copia o projeto
+      - cd deploy
+      - zip -r ../deploy.zip .
+
+artifacts:
+  files:
+    - deploy.zip
