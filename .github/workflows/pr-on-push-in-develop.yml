@@ -1,0 +1,46 @@
+name: PR Auto para Develop
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  auto_pr_to_master:
+    if: startsWith(github.event.ref, 'refs/heads/') && github.event.sender.login != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if parent branch is master
+        id: check
+        run: |
+          echo "##[group]Verificando branch pai"
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Branch criada: $BRANCH"
+
+          # Verifica se foi criada a partir da master
+          PARENT=$(git log --pretty=%D -n 1 | grep -o 'origin/master' || echo 'none')
+          echo "Parent branch detectada: $PARENT"
+
+          if [[ "$PARENT" == "origin/master" ]]; then
+            echo "create_pr=true" >> $GITHUB_OUTPUT
+          else
+            echo "create_pr=false" >> $GITHUB_OUTPUT
+          fi
+          echo "##[endgroup]"
+        shell: bash
+
+      - name: Checkout
+        if: steps.check.outputs.create_pr == 'true'
+        uses: actions/checkout@v3
+
+      - name: Cria Pull Request para master
+        if: steps.check.outputs.create_pr == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          source: ${{ github.ref_name }}
+          target: master
+          title: 'PR: ${{ github.ref_name }} → master'
+          body: |
+            PR automático criado a partir da branch `${{ github.ref_name }}` para `master`.
+          branch: auto/${{ github.ref_name }}-to-master
