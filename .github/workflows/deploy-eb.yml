@@ -21,9 +21,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Publish
-        run: npm publish --access public --workspace ${{ github.workspace }}/out
-
       - name: Criar pacote zip
         run: |
           zip -r $DEPLOY_ZIP . -x '*.git*' -x 'node_modules/*' -x 'tests/*' -x 'README*' -x 'LICENSE'
