@@ -56,5 +56,4 @@ jobs:
                   ## Changelog
                   ${{ steps.changelog.outputs.CHANGELOG }}
                 assignees: Gabriel-dev2
-                reviewers: Gabriel-dev2
                 draft: false
