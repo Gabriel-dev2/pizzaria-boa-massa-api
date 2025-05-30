@@ -18,9 +18,8 @@ jobs:
           - name: Changelog extraction
             id: changelog
             run: |
-              # Exemplo: extrai últimas 10 linhas do CHANGELOG.md
               echo 'CHANGELOG<<EOF' >> $GITHUB_OUTPUT
-              tail -n 10 CHANGELOG.md >> $GITHUB_OUTPUT
+              git log origin/develop..HEAD --pretty=format:"- %s" >> $GITHUB_OUTPUT
               echo 'EOF' >> $GITHUB_OUTPUT
 
           - name: Create Pull Request to develop
@@ -34,5 +33,4 @@ jobs:
                   Pull request automático gerado para merge de `${{ github.ref_name }}` em `develop`.
 
                   ## Changelog
-
-            
+                  ${{ steps.changelog.outputs.CHANGELOG }}
