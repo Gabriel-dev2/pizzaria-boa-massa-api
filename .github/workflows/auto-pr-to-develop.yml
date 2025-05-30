@@ -24,8 +24,9 @@ jobs:
           - name: Changelog extraction
             id: changelog
             run: |
+              CHANGELOG=$(git log origin/develop..HEAD --pretty=format:"- %s" || echo "")
               echo 'CHANGELOG<<EOF' >> $GITHUB_OUTPUT
-              git log origin/develop..HEAD --pretty=format:"- %s" >> $GITHUB_OUTPUT
+              echo $CHANGELOG >> $GITHUB_OUTPUT
               echo 'EOF' >> $GITHUB_OUTPUT
 
           - name: Create Pull Request to develop
