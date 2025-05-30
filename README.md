@@ -2,4 +2,4 @@
 Api de Restaurante Ficticio Boa Massa
 
 # Stack
-- NodeJS
+- NodeJS(Expressjs)
