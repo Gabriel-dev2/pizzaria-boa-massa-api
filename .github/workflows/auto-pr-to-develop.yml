@@ -29,6 +29,12 @@ jobs:
               echo $CHANGELOG >> $GITHUB_OUTPUT
               echo 'EOF' >> $GITHUB_OUTPUT
 
+          - name: Extract git commit data
+            uses: rlespinasse/git-commit-data-action@v1.5.0
+
+          - name: Update Author
+            run: echo ${{ env.GIT_COMMIT_AUTHOR_NAME }} > AUTHOR
+
           - name: Create Pull Request to develop
             uses: peter-evans/create-pull-request@v7.0.8
             with:
@@ -42,4 +48,6 @@ jobs:
                   ## Changelog
                   ${{ steps.changelog.outputs.CHANGELOG }}
                 assignees: Gabriel-dev2
+                commiter: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
+                author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
                 draft: false
