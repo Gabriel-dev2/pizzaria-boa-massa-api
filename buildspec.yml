@@ -15,8 +15,8 @@ phases:
       - echo "Criando arquivo .env"
       - |
         cat <<EOF > .env
-        DATABASE_URL=postgres://boamassauser:admin@localhost:5432/boamassa
-        JWT_SECRET=3a3253a19ee38b154d26d036db1a4b52
+        DATABASE_URL=$DATABASE_URL
+        JWT_SECRET=$JWT_SECRET
         PORT=8080
         EOF
       - echo "Listando arquivos preparados para deploy"
