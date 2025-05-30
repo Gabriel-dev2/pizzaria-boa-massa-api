@@ -31,6 +31,8 @@ jobs:
 
           - name: Create commits
             run: |
+              git config user.name 'Gabriel-dev2'
+              git config user.emal 'gabriel23costalima@outlook.com'
               date +%s > report.txt
               git commit -am "Modify tracked file during workflow"
               date +%s > new-report.txt
