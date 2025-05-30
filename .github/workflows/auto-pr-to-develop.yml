@@ -24,7 +24,7 @@ jobs:
               echo 'EOF' >> $GITHUB_OUTPUT
 
           - name: Create Pull Request to develop
-            uses: peter-evans/create-pull-requests@v5
+            uses: peter-evans/create-pull-requests@v4
             with:
                 token: ${{ secrets.TOKEN_PR }}
                 branch: ${{ github.ref_name }}
