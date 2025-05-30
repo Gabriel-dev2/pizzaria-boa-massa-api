@@ -14,6 +14,12 @@ jobs:
         steps:
           - name: Checkout code
             uses: actions/checkout@v3
+            with:
+                fetch-depth: 0
+                ref: ${{ github.ref }}
+
+          - name: List Branches available
+            run: git branch -a
 
           - name: Changelog extraction
             id: changelog
