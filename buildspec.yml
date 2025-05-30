@@ -5,27 +5,31 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "Instalando dependências do node"
+      - echo "Instalando dependências do Node.js"
       - npm ci
 
   build:
     commands:
       - echo "Compilando TypeScript"
       - npm run build
-
-      - echo "Criando .env"
+      - echo "Criando arquivo .env"
       - |
         cat <<EOF > .env
         DATABASE_URL=postgres://boamassauser:admin@localhost:5432/boamassa
         JWT_SECRET=3a3253a19ee38b154d26d036db1a4b52
         PORT=8080
         EOF
-
-  post_build:
-    commands:
-      - echo "Gerando artefato deploy.zip"
-      - zip -r deploy.zip Dockerfile docker-compose.yml prisma src package*.json .env .ebextensions
+      - echo "Listando arquivos preparados para deploy"
+      - ls -la
 
 artifacts:
   files:
-    - deploy.zip
+    - Dockerfile
+    - docker-compose.yml
+    - .env
+    - package*.json
+    - '**/*.ts'
+    - '**/*.js'
+    - prisma/**/*
+    - src/**/*
+    - .ebextensions/**/*
