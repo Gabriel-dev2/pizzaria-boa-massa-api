@@ -28,8 +28,12 @@ artifacts:
     - docker-compose.yml
     - .env
     - package*.json
-    - '**/*.ts'
-    - '**/*.js'
     - prisma/**/*
     - src/**/*
-    - .ebextensions/**/*
+    - tsconfig.json
+
+  discard-paths: no
+  exclude-paths:
+    - "**/node_modules/**"
+    - "**/dist/**"
+    - "**/.ebextensions/**"
