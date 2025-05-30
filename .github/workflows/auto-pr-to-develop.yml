@@ -1,0 +1,38 @@
+name: Abrir Pull Request para develop
+
+on:
+    push:
+        branches:
+            - 'feature/*'
+            - 'chore/*'
+            - 'fix/*'
+
+jobs:
+    open-pull-request:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+
+          - name: Changelog extraction
+            id: changelog
+            run: |
+              # Exemplo: extrai últimas 10 linhas do CHANGELOG.md
+              echo 'CHANGELOG<<EOF' >> $GITHUB_OUTPUT
+              tail -n 10 CHANGELOG.md >> $GITHUB_OUTPUT
+              echo 'EOF' >> $GITHUB_OUTPUT
+
+          - name: Create Pull Request to develop
+            uses: peter-evans/create-pull-requests@v5
+            with:
+                token: ${{ secrets.TOKEN_PR }}
+                branch: ${{ github.ref_name }}
+                base: develop
+                title: 'Automated PR: ${{ github.ref_name }} -> develop'
+                body: |
+                  Pull request automático gerado para merge de `${{ github.ref_name }}` em `develop`.
+
+                  ## Changelog
+
+            
