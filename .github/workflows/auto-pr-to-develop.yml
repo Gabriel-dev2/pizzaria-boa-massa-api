@@ -29,6 +29,17 @@ jobs:
               echo $CHANGELOG >> $GITHUB_OUTPUT
               echo 'EOF' >> $GITHUB_OUTPUT
 
+          - name: Create commits
+            run: |
+              date +%s > report.txt
+              git commit -am "Modify tracked file during workflow"
+              date +%s > new-report.txt
+              git add -A
+              git commit -m "Add untracked file during worklow"
+
+          - name: Uncommitted change
+            run: date +%s > report.txt
+
           - name: Create Pull Request to develop
             uses: peter-evans/create-pull-request@v7.0.8
             with:
