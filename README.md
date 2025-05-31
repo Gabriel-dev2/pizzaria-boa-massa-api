@@ -3,3 +3,4 @@ Api de Restaurante Ficticio Boa Massa
 
 # Stack
 - NodeJS(Expressjs)
+- Docker
