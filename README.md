@@ -13,3 +13,7 @@ Api de Restaurante Ficticio Boa Massa
 # Github Actions
 - PR para develop
 - PR para master
+
+# Ambientes
+- Prod
+- Dev
