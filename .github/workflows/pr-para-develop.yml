@@ -1,0 +1,36 @@
+name: PR automático para develop
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'hotfix/**'
+      - 'bugfix/**'
+
+jobs:
+  create-pr-to-develop:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/github/gh-cli:latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt-get update
+          sudo apt-get install gh -y
+
+      - name: Criar Pull Request para develop
+        run: |
+          gh pr create \
+            --title "PR automático para develop: ${{ github.ref_name }}" \
+            --body "Este PR foi criado automaticamente de `${{ github.ref_name }}` para `develop`." \
+            --base develop \
+            --head ${{ github.ref_name }} \
+            --label "auto-pr"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
