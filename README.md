@@ -20,3 +20,6 @@ Api de Restaurante Ficticio Boa Massa
 
 # Projeto
 urls
+
+# Banco de dados
+Postgresql
