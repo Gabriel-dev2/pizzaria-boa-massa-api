@@ -17,7 +17,7 @@ jobs:
 
       - name: Instalar GitHub CLI manualmente
         run: |
-          curl -fsSL https://github.com/cli/cli/releases/latest/download/gh_2.49.0_linux_amd64.deb -o gh.deb
+          curl -fsSL https://github.com/cli/cli/releases/download/v2.74.0/gh_2.74.0_linux_amd64.deb -o gh.deb
           sudo dpkg -i gh.deb
 
       - name: Criar Pull Request para develop
