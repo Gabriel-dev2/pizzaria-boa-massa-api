@@ -10,13 +10,12 @@ on:
 jobs:
   create-pr-to-develop:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/github/gh-cli:latest
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
-
-      - name: Instalar GitHub CLI
-        uses: cli/cli-action@v2
 
       - name: Criar Pull Request para develop
         run: |
