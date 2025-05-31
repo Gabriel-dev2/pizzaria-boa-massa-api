@@ -1,0 +1,31 @@
+name: PR automático develop → master
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  create-pr-to-master:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Criar Pull Request para master
+        run: |
+          # Evita criar PR se já existir um aberto do develop para master
+          gh pr list --base master --head develop --json number | grep -q '"number":' && echo "PR já existe" && exit 0
+
+          gh pr create \
+            --title "PR automático: develop → master" \
+            --body "Merge automático de develop para master após alterações." \
+            --base master \
+            --head develop \
+            --label "auto-pr"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
