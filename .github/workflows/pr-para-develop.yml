@@ -10,8 +10,6 @@ on:
 jobs:
   create-pr-to-develop:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/github/gh-cli:latest
 
     steps:
       - name: Checkout do código

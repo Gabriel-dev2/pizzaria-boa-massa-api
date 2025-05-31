@@ -9,3 +9,7 @@ Api de Restaurante Ficticio Boa Massa
 
 - AWS CodePipeline
 - Elastic Beanstalk
+
+# Github Actions
+- PR para develop
+- PR para master
