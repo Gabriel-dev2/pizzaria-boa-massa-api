@@ -4,3 +4,8 @@ Api de Restaurante Ficticio Boa Massa
 # Stack
 - NodeJS(Expressjs)
 - Docker
+
+# Integração
+
+- AWS CodePipeline
+- Elastic Beanstalk
