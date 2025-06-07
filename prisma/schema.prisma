@@ -65,7 +65,7 @@ model Product {
 model Order {
   id         String    @id @default(uuid())
   status     Boolean   @default(false)
-  draft      Boolean   @default(true)
+  draft      Boolean   @default(false)
   name       String?
   paid       Boolean   @default(false)
   paid_draft String    @default("")
